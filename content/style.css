@@ -1,0 +1,118 @@
+body {
+    font-family: sans-serif;
+}
+
+header {
+    background: lightslategrey;
+    padding: 20px;
+    border-bottom: darkslategrey 10px solid;
+    margin-bottom: 30px;
+    color: whitesmoke;
+    text-align: center
+}
+
+footer {
+    background: lightslategrey;
+    padding: 20px;
+    border-top: darkslategrey 10px solid;
+    margin-top: 200px;
+    color: white;
+    text-align: center
+}
+
+button,
+input[type=file] {
+    background-color: #77a8a8;
+    border: none;
+    border-radius: 10px;
+    color: white;
+    padding: 10px 15px;
+    text-align: center;
+    margin: 10px 5px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.dropdown {
+    background-color: #77a8a8;
+    color: white;
+    padding: 10px;
+    font-size: 14px;
+    border: none;
+    cursor: pointer;
+}
+
+.dropdown option {
+    background-color: #77a8a8;
+    width: 200px;
+    color: white;
+    padding: 8px 8px;
+}
+
+#groupsJoinedList>li,
+#eventList>li {
+    cursor: pointer;
+}
+
+li {
+    margin: 10px 0;
+}
+
+a {
+    text-decoration: none;
+    color: white;
+}
+
+label {
+    padding: 15px;
+}
+
+/* INDIVIDUAL GROUP PAGE STYLING */
+
+#groupPage {
+    display: none;
+}
+
+#msgtext {
+    display: block;
+    resize: both;
+    font-family: inherit;
+    font-size: inherit;
+    padding: 1px 6px;
+    color: darkslategrey;
+}
+
+.msgsBtn {
+    margin: 5px;
+    padding: 5px;
+    border-radius: 8px;
+}
+
+#desc {
+    margin-top: 5px;
+    resize: both;
+    font-family: inherit;
+    font-size: inherit;
+    padding: 1px 6px;
+}
+
+.gallery {
+    padding: 10px;
+}
+
+#mediaFields {
+    border: darkslategray 5px solid;
+    border-radius: 10px;
+    padding: 0px 10px;
+    margin-bottom: 10px;
+}
+
+#mediaFields>legend {
+    margin-left: 10px;
+    padding: 0px 5px;
+}
+
+#map {
+    width: 800px;
+    height: 500px;
+}

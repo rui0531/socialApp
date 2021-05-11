@@ -1,0 +1,43 @@
+{
+    "name": "cs5003-p3-group25",
+    "version": "1.0.0",
+    "description": "A community groups project for CS5003 (Group 25)",
+    "main": "server.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "start": "node server.js",
+        "dev": "nodemon server.js"
+    },
+    "repository": {
+        "type": "git",
+        "url": "ssh://sp259@sp259.host.cs.st-andrews.ac.uk:/cs/group/cs5003-group25/repos/cs5003-p3-group25"
+    },
+    "author": "Group 25",
+    "license": "ISC",
+    "dependencies": {
+        "bcrypt": "^5.0.1",
+        "chai": "^4.3.4",
+        "chai-as-promised": "^7.1.1",
+        "chai-http": "^4.3.0",
+        "connect-flash": "^0.1.1",
+        "connect-mongodb-session": "^2.4.1",
+        "console": "^0.7.2",
+        "crypto": "^1.0.1",
+        "ejs": "^3.1.6",
+        "express": "^4.17.1",
+        "express-session": "^1.17.1",
+        "jsdoc": "^3.6.6",
+        "mocha": "^8.3.2",
+        "mongo": "^0.1.0",
+        "multer": "^1.4.2",
+        "node": "^15.12.0",
+        "passport": "^0.4.1",
+        "passport-local": "^1.0.0",
+        "path": "^0.12.7",
+        "util": "^0.12.3",
+        "uuid": "^8.3.2"
+    },
+    "devDependencies": {
+        "nodemon": "^2.0.7"
+    }
+}

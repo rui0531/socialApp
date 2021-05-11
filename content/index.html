@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+    <!--Importing GLightbox library-->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/glightbox/dist/css/glightbox.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/mcstudios/glightbox/dist/js/glightbox.min.js"></script>
+
+    <!--Importing D3 and Leaflet libraries-->
+    <script src="https://d3js.org/d3.v5.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.4.0/dist/leaflet.css" integrity="sha512-puBpdR0798OZvTTbP4A8Ix/l+A4dHDD0DGqYW6RQ+9jxkRFclaxxQb/SJAWZfWAkuyeQUytO7+7N4QKrDh+drA==" crossorigin="" />
+    <script src="https://unpkg.com/leaflet@1.4.0/dist/leaflet.js" integrity="sha512-QVftwZFqvtRNi0ZyCtsznlKSWOStnDORoefr1enyq5mVL4tmKB3S/EnC3rRJcxCPavG10IcrVGSmPh6Qw5lwrg==" crossorigin=""></script>
+
+    <!--Link to stylesheet-->
+    <link rel="stylesheet" href="style.css">
+
+    <title>Communities</title>
+</head>
+
+<body>
+    <header>
+        <h1>The Community</h1>
+        <p>Welcome to the community! Join groups related to your interests and attend events with other like-minded people.</p>
+    </header>
+
+    <!--Login and registering-->
+    <section class="login-form" id="loginpage">
+        <div class="userArea">
+            <input type="text" name="id" id="username" autocomplete="off" required>
+            <label for="username"> Username </label>
+        </div>
+        <div class="userArea">
+            <input type="password" name="pw" id="password" autocomplete="off" required>
+            <label for="password"> Password </label>
+        </div>
+        <div class="btnArea">
+            <button id="login">LOG IN!</button>
+            <button id="register">Register New User</button>
+        </div>
+    </section>
+
+    <section id="registerHomepage" style="display: none;">
+        <div id="newUsername">
+            <h2>New User Registration</h2>
+            <label for="newusername">Username (4~21 digits): </label>
+            <input id="newusername" name="newusername" type="text" required />
+            <br>
+            <label for="newpassword">Password (more than 7 digits): </label>
+            <input id="newpassword" name="newpassword" type="password" required />
+        </div>
+        <br>
+        <div id="selectInterests">
+            <label for="allInterests">Select your interests (you can choose multiple options by holding Control (Windows) or Command (Mac): </label><br><br>
+            <select id="allInterests" name="allInterests" multiple size="20" multiple></select>
+        </div><br>
+
+        <button><a href="http://localhost:3000/"> Go back to Login </a></button>
+
+        <button id="signup" class="btn">SIGN UP!</button><br>
+    </section>
+
+    <!--User Homepage-->
+    <section id="userHomepage" style="display: none;">
+        <div id="editUser">
+            <div id="groupsJoined">
+                Groups Joined - click a group to go to the group page:
+                <ul id="groupsJoinedList"></ul>
+            </div>
+            <h2 id="currentUser"></h2> <button id="logout">Log Out</button>
+            <button id="deleteUser">Delete Account</button>
+            <button id="editInterests">Edit Interests</button>
+            <button id="editGroups">Edit Joined Groups</button>
+            <button id="userCreateNewGroup">Create new group</button>
+        </div>
+        <div id="deleteUserDiv" style="display: none;">
+            <label for="passwordDeleteUser">Password</label>
+            <input type="password" name="passwordDeleteUser" id="passwordDeleteUser" autocomplete="off" required>
+            <button id="submitDeleteUser">Submit</button>
+            <button id="cancelDeleteUser">Cancel</button>
+        </div>
+        <div id="editInterestsDiv" style="display: none;">
+            Add or remove interests below:
+            <ul id="addInterestsList"></ul>
+            <button id="backInterests">Done</button>
+        </div>
+        <div id="suggestedGroups">
+            You might also like this group:
+            <div id="suggestedGroupsList"></div>
+            <button id="joinSuggestedGroup">Join Group</button>
+        </div>
+    </section>
+
+    <!--Create Group Page-->
+    <section id="newGroupPage" style="display: none;">
+        <label> Group Name :</label>
+        <input id="groupName" size="30" placeholder="Name your own group" autocomplete="off" onfocus="this.value=''"></input>
+        <label> Description :</label>
+        <input id="description" size="40" placeholder="Write introduction for your group" autocomplete="off" onfocus="this.value=''"></input>
+        <label> Tags :</label>
+        <input id="tags" size="40" placeholder="Please separate with commas" autocomplete="off" onfocus="this.value=''"></input>
+        <br>
+        <button id="createGroup"> Confirm </button>
+        <button id="return">Return to user home page</button>
+    </section>
+    <!--Create Group Page end-->
+
+    <!--List of All Groups Page-->
+    <section id="joinGroupPage" style="display: none;">
+        <div id="created">
+            The groups you created:
+            <ul id="groupCreated">
+            </ul>
+        </div>
+        <div id="joined">
+            Join or quit groups below:
+            <ul id="groupsList">
+            </ul>
+        </div>
+        <div id="tagGroup">
+            <label for="tagDrop">Select tags you are interested in: </label>
+            <select id="tagDrop" class="dropdown"></select>
+            <button id="search">Search</button>
+            <ul id="groupsTag"></ul>
+        </div>
+        <button id="backGroups">Return to user homepage</button>
+    </section>
+    <!--List of All Groups Page end-->
+
+    <!--Individual Group Page-->
+    <section id="groupPage" style="display: none;">
+        <div id="group">
+            <h2 id="groupTitle"></h2>
+            <p id="groupDesc"></p>
+            <p id="groupAdmin"></p>
+        </div>
+
+        <button id="toHomepage">User Homepage</button>
+        <button id="viewMembers">View Members</button>
+        <button id="hideMembers" style="display: none;">Hide Members</button>
+        <div id="groupMembers" style="display: none;">
+            <h3>Members</h3>
+            <ul id="membersList"></ul>
+        </div>
+
+        <button id="viewEvents">View Events</button>
+        <button id="hideEvents" style="display: none;">Hide Events</button>
+        <div id="groupEvents" style="display: none;">
+            <h3>Events</h3>
+            <button id="createNewEvent">Create New Event</button>
+            <ul id="eventList"></ul>
+            <p style="font-weight: bold;">Click "Hide Events" firstly followed by "View Events" to refresh the map</p>
+        </div>
+
+        <button id="viewMessages">View Messages</button>
+        <button id="hideMessages" style="display: none;">Hide Messages</button>
+        <div id="groupMessages" style="display: none;">
+            <h3>Messages</h3>
+            <div id="messages">
+                <button id="addMessage">Leave a New Message</button>
+                <ul id="messagesList"></ul>
+            </div>
+            <div id="newMessage">
+                <label for="msgtext">Write your message:</label>
+                <textarea id="msgtext" rows="4" cols="50" value=""></textarea>
+                <button id="submitMessage">Submit Message</button>
+                <button id="submitComment">Submit Comment</button>
+                <button id="cancelMessage">Cancel</button>
+            </div>
+        </div>
+
+        <div id="media">
+            <h3>Gallery</h3>
+            <form id="uploadMedia">
+                <fieldset id="mediaFields">
+                    <legend>Upload new media:</legend>
+                    <input type="hidden" id="groupUpload" name="groupUpload" value="">
+
+                    <label for="title">Title of media:</label>
+                    <input id="title" name="title" value="" />
+                    <label for="desc">Short description:</label>
+                    <textarea rows="1" cols="60" id="desc" name="desc" value=""></textarea><br>
+
+                    <label for="uploadedMedia">Select media to upload:</label>
+                    <input type="file" id="uploadedMedia" name="uploadedMedia" value="" />
+
+                    <button type='submit'>Upload</button>
+                </fieldset>
+            </form>
+            <div id="gallery"></div>
+        </div>
+    </section>
+    <!--Group Page end-->
+
+    <!-- event Page -->
+    <section id="newEvent" style="display: none;">
+        <form id="resetEvent">
+            <label> Event Name :</label>
+            <input id="eventInput" autocomplete="off" onfocus="this.value=''"></input>
+            <label> Location :</label>
+            <input id="locationInput" autocomplete="off" onfocus="this.value=''"></input>
+            <input type="date" id="eventDate" autocomplete="off" onfocus="this.value=''">
+            <label> Comments :</label>
+            <input id="commentInput" autocomplete="off" onfocus="this.value=''"></input>
+        </form>
+        <br>
+        <button id="createEvent"> Confirm </button>
+        <button id="returnE">Return to the group page</button>
+    </section>
+
+    <section id="eventPage" style="display: none;"></section>
+    <!-- Event pages end-->
+
+    <footer>
+        <p>CS5003 - Masters Programming Projects </p>
+        <p>Practical 3 - Group 25</p>
+        <p>Student IDs: 190030185, 200030212, 200002284, 200012230, 200030189</p>
+    </footer>
+
+    <script src="./client.js"></script>
+    <script src="./clientUI.js"></script>
+    <!--<script src="model.js"></script>-->
+</body>
+
+</html>

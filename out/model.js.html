@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: model.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: model.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * Model for the community webpage 
+ * Includes model for User, Group, Message, Media, Event
+ * Designed for both server and client side
+ * 
+ * @author CS5003 Group 25
+ * @module shared/model
+ * @version 1.0
+ *  **/
+
+(function() {
+    /**
+     * Represents a User
+     * Contains username, password, interests, groups joined
+     */
+
+    // create User class
+    class User {
+        /**
+         * 
+         * @param {string} username 
+         * @param {string} password 
+         * @param {Array} interests 
+         * @param {Array} groupsJoined 
+         */
+        constructor(username, password, interests, groupsJoined) {
+                this._username = username;
+                this._password = password;
+                this._interests = interests;
+                this._groupsJoined = groupsJoined;
+            }
+            /**
+             * gets the username
+             * @type {string}
+             * @readonly
+             */
+        get username() { return this._username }
+            /**
+             * gets the password
+             * @type {string}
+             * @readonly
+             */
+        get password() { return this._password }
+            /**
+             * gets the interests
+             * @type {Array}
+             * @readonly
+             */
+        get interests() { return this._interests }
+            /**
+             * gets the groups joined 
+             * @type {Array}
+             * @readonly
+             */
+        get groupsJoined() { return this._groupsJoined }
+
+        /**
+         * Adds an interest to existing array
+         * @param {string} interest 
+         */
+        addInterest(interest) {
+                this._interests.push(interest)
+            }
+            /**
+             * finds index of interest to delete and removes it from existing array
+             * @param {string} interest 
+             */
+        deleteInterest(interest) {
+                let i = this._interests.indexOf(interest)
+                i != -1 ? this._interests.splice(i, 1) : ""
+            }
+            /**
+             * Adds a group to groups joined
+             * @param {string} group 
+             */
+        addGroup(group) {
+                this._groupsJoined.push(group)
+            }
+            /**
+             * Finds index of group to remove and removes from existing array
+             * @param {string} group 
+             */
+        deleteGroup(group) {
+            let i = this._groupsJoined.indexOf(group)
+            i != -1 ? this._groupsJoined.splice(i, 1) : ""
+        }
+
+        /**
+         * Converts from the class representation to plain json
+         * @returns {Object} Returns the json representation
+         */
+        toJSON() {
+            let jsn = new Object();
+            jsn.username = this._username;
+            jsn.password = this._password;
+            jsn.interests = this._interests;
+            jsn.groupsJoined = this._groupsJoined;
+            return jsn;
+        }
+
+        /**
+         * Converts a json object into a User object
+         * Validates the data 
+         * @param {Object} jsn - json representation
+         * @returns {User} the User converted from the json
+         */
+        static fromJSON(jsn) {
+            //check not null
+            if (jsn == null) { return "null value" } //{throw new Error("null value")}
+            //validate username is string
+            let isValidUsername = jsn.hasOwnProperty("username") &amp;&amp; typeof jsn.username == "string" &amp;&amp; jsn.username.length > 4 &amp;&amp; jsn.username.length &lt; 21
+            if (!isValidUsername) { return "invalid username" } //{throw new Error("invalid username")}
+            //validate password is string
+            let isValidPassword = jsn.hasOwnProperty("password") &amp;&amp; typeof jsn.password == "string" &amp;&amp; jsn.password.length > 7 &amp;&amp; jsn.password.length &lt; 31
+            if (!isValidPassword) { return "invalid password" } //{throw new Error("invalid password")}
+            //validate interests is array or undefined
+            let isValidInterests = Array.isArray(jsn.interests) || jsn.interests == undefined
+            if (!isValidInterests) { return "invalid interests" } //{throw new Error("invalid interests")}
+            //validate groups joined is array or undefined
+            let isValidGroupsJoined = Array.isArray(jsn.groupsJoined) || jsn.groupsJoined == undefined
+            if (!isValidGroupsJoined) { return "invalid groups joined" } //{throw new Error("invalid groups joined")}
+
+            if (isValidUsername &amp;&amp; isValidPassword &amp;&amp; isValidInterests &amp;&amp; isValidGroupsJoined) {
+                let u = new User(
+                    jsn.username,
+                    jsn.password,
+                    (jsn.interests) ? jsn.interests : new Array(),
+                    (jsn.groupsJoined) ? jsn.groupsJoined : new Array());
+                return u;
+            }
+        }
+    }
+
+    // create Group class
+    class Group {
+        constructor(groupname, description, tags, members, adminuser, msgs, media) {
+            this._groupname = groupname;
+            this._description = description;
+            this._tags = tags;
+            this._members = members;
+            this._adminuser = adminuser;
+            this._msgs = msgs;
+            this._media = media
+        }
+
+        get groupname() { return this._groupname };
+        get description() { return this._description };
+        set description(newDesc) {
+            if (typeof(newDesc) === 'string' &amp;&amp; newDesc != "") this._description = newDesc;
+            else throw new Error("Invalid description");
+        }
+
+        get tags() { return this._tags };
+
+        addTag(tag) {
+            this._tags.push(tag)
+        }
+
+        get members() { return this._members };
+
+        get adminuser() { return this._adminuser };
+
+        get messages() { return this._msgs }
+
+        get media() { return this._media }
+
+        addMessage(msg) {
+            this._msgs.push(msg);
+        }
+
+        addMedia(path) {
+            this._media.push(path);
+        }
+
+        // Convert to JSON
+        toJSON() {
+            let group = new Object();
+            group.groupname = this._groupname;
+            group.description = this._description;
+            group.tags = this._tags;
+            group.members = this._members;
+            group.adminuser = this._adminuser;
+            group.msgs = this._msgs;
+            group.media = this._media;
+            return group;
+        }
+
+        // Create group from JSON
+        static fromJSON(jsn) {
+            if (jsn == null) { return "invalid value" }
+            let isValidGroupname = jsn.hasOwnProperty("groupname") &amp;&amp; typeof jsn.groupname == "string" &amp;&amp; jsn.groupname.length > 4 &amp;&amp; jsn.groupname.length &lt; 21
+            if (!isValidGroupname) { return "invalid groupname" }
+            let isValidDescription = jsn.hasOwnProperty("description") &amp;&amp; typeof jsn.description == "string"
+            if (!isValidDescription) { return "invalid description" }
+            let isValidTags = Array.isArray(jsn.tags) || jsn.tags == undefined
+            if (!isValidTags) { return "invalid tags" }
+            let isValidMembers = Array.isArray(jsn.members) || jsn.members == undefined
+            if (!isValidMembers) { return "invalid members" }
+            let isValidAdminuser = Array.isArray(jsn.adminuser) || jsn.adminuser == undefined
+            if (!isValidAdminuser) { return "invalid adminuser" }
+
+            if (isValidGroupname &amp;&amp; isValidDescription &amp;&amp; isValidTags &amp;&amp; isValidMembers &amp;&amp; isValidAdminuser) {
+                return new Group(jsn.groupname, jsn.description, jsn.tags, jsn.members, jsn.adminuser, (jsn.msgs) ? jsn.msgs.map(m => Message.fromJSON(m)) : new Array(), (jsn.media) ? jsn.media : new Array());
+            }
+        }
+    }
+
+    /** Class representing a Message. Comments are represented by this class too. */
+    class Message {
+        /**
+         * Create a message.
+         * @param {string} msgID 
+         * @param {string} text 
+         * @param {string} author 
+         * @param {Date} date 
+         * @param {Array} comments 
+         */
+        constructor(msgID, text, author, date, comments) {
+            this._msgID = msgID;
+            this._text = text;
+            this._author = author;
+            this._date = date;
+            this._comments = comments;
+        }
+
+        /**
+         * The ID of this message
+         * @type {string}
+         * @readonly
+         */
+        get msgID() { return this._msgID; }
+
+        /**
+         * The text content of this message
+         * @type {string}
+         */
+        get text() { return this._text; }
+        set text(t) { this._text = t; }
+
+        /**
+         * The user who created this message
+         * @type {string}
+         * @readonly
+         */
+        get author() { return this._author; }
+
+        /**
+         * The creation date of this message
+         * @type {Date}
+         * @readonly
+         */
+        get date() { return this._date; }
+
+        /**
+         * The comments attached to this message
+         * @type {Array} 
+         */
+        get comments() { return this._comments; }
+
+        /**
+         * Converts from Message object properties to JSON object
+         * @returns {Object} the JSON representation
+         */
+        toJSON() {
+            let messages = {};
+            messages.msgID = this._msgID;
+            messages.text = this._text;
+            messages.author = this._author;
+            messages.date = this._date;
+            messages.comments = this._comments;
+            return messages;
+        }
+
+        // Convert to string
+        toJSONstring() {
+            return JSON.stringify(this.toJSON());
+        }
+
+        /**
+         * Converts a JSON object into a Message object
+         * @param {Object} jsn - the JSON object to initialise from
+         * @returns {Message} the Message object converted from JSON
+         */
+        // Create message from JSON
+        static fromJSON(jsn) {
+            if (jsn == null) { throw new Error("null value"); }
+            if (!jsn.hasOwnProperty("msgID")) { throw new Error("Missing message ID") }
+            if (!jsn.hasOwnProperty("text") || jsn.text.length === 0) { throw new Error("Missing message text") }
+            if (!jsn.hasOwnProperty("author") || !(typeof jsn.author == "string")) { throw new Error("Invalid author"); }
+
+            return new Message(jsn.msgID, jsn.text, jsn.author, (jsn.date) ? jsn.date : new Date(), (jsn.comments) ? jsn.comments : new Array());
+        }
+
+        // build from string
+        static fromJSONString(str) {
+            return Message.fromJSON(JSON.parse(str));
+        }
+    }
+
+    class Media {
+        constructor(title, description, user, path) {
+            this._title = title;
+            this._description = description;
+            this._user = user;
+            this._path = path;
+        }
+
+        get title() { return this._title; }
+
+        get description() { return this._description; }
+
+        get user() { return this._user; }
+
+        get path() { return this._path; }
+
+        // Convert to JSON
+        toJSON() {
+            let media = {};
+            media.title = this._title;
+            media.description = this._description;
+            media.user = this._user;
+            media.path = this._path;
+            return media;
+        }
+
+        // Convert to string
+        toJSONstring() {
+            return JSON.stringify(this.toJSON());
+        }
+
+        // Create media from JSON
+        static fromJSON(jsn) {
+            if (jsn == null) { throw new Error("null value"); }
+            if (!jsn.hasOwnProperty("path")) { throw new Error("Missing file path") }
+            if (!jsn.hasOwnProperty("title") || jsn.title.length === 0) { throw new Error("Please include a title.") }
+            if (!jsn.hasOwnProperty("description") || jsn.description.length === 0) { throw new Error("Please include a short description."); }
+            if (!jsn.hasOwnProperty("user") || !(typeof jsn.user == "string")) { throw new Error("Invalid upload user"); }
+
+            return new Media(jsn.title, jsn.description, jsn.user, jsn.path);
+        }
+
+        // build from string
+        static fromJSONString(str) {
+            return Media.fromJSON(JSON.parse(str));
+        }
+    }
+
+    class Event {
+        constructor(eventId, eventName, location, date = new Date(), comments, usersGoing, createdBy, groupName) {
+            this._eventId = eventId;
+            this._eventName = eventName;
+            this._location = location;
+            this._date = date;
+            this._comments = comments;
+            this._usersGoing = usersGoing;
+            this._createdBy = createdBy;
+            this._groupName = groupName;
+        }
+
+        get eventId() { return this._eventId };
+        get eventName() { return this._eventName };
+        get location() { return this.location };
+        get date() { return this.date };
+        get comments() { return this._comments };
+        get usersGoing() { return this._usersGoing };
+        get createdBy() { return this._createdBy };
+        get groupName() { return this._groupName };
+
+        addUser(user) {
+            this._usersGoing.push(user)
+        }
+
+        toJSON() {
+            let jsn = new Object();
+            jsn.eventId = this._eventId;
+            jsn.eventName = this._eventName;
+            jsn.location = this._location;
+            jsn.date = this._date;
+            jsn.comments = this._comments;
+            jsn.usersGoing = this._usersGoing;
+            jsn.createdBy = this._createdBy;
+            jsn.groupName = this._groupName;
+
+            return jsn;
+        }
+
+        static fromJSON(jsn) {
+            if (jsn == null) { throw new Error("null value"); }
+            let isValideventId = jsn.hasOwnProperty("eventId")
+            if (!isValideventId) { return "Missing event ID" }
+            let isValideventName = jsn.hasOwnProperty("eventName") &amp;&amp; typeof jsn.eventName == "string"
+            if (!isValideventName) { return "Invalid event name"; }
+            let isValidLocation = jsn.hasOwnProperty("location") &amp;&amp; typeof jsn.location == "string"
+            if (!isValidLocation) { return "Invalid group description"; }
+            let isValidDate = jsn.hasOwnProperty("date")
+            if (!isValidDate) { return "Missing date information"; }
+            let isValidComments = jsn.hasOwnProperty("comments") &amp;&amp; typeof jsn.comments == "string"
+            if (!isValidComments) { return "Invalid comments"; }
+            let isValiduserGoing = jsn.hasOwnProperty("usersGoing") &amp;&amp; Array.isArray(jsn.usersGoing)
+            if (!isValiduserGoing) { return "Invalid userGoing"; }
+            let isValidcreatedBy = jsn.hasOwnProperty("createdBy") &amp;&amp; typeof jsn.createdBy == "string"
+            if (!isValidcreatedBy) { return "Invalid created user"; }
+            let isValidgroupName = jsn.hasOwnProperty("groupName") &amp;&amp; typeof jsn.groupName == "string"
+            if (!isValidgroupName) { return "Invalid groupName"; }
+
+
+            return new Event(jsn.eventId, jsn.eventName, jsn.location, jsn.date, jsn.comments, jsn.usersGoing, jsn.createdBy, jsn.groupName);
+        }
+
+    }
+
+    // Export all classes
+    var moduleExports = {
+        User: User,
+        Group: Group,
+        Message: Message,
+        Media: Media,
+        Event: Event
+    };
+
+    /* Check if we are running in a browser. If so, attach the exported closure to the main window.
+    Otherwise, use the node.js module exporting functionality. This way we can use this module both 
+    in the browser and on the server */
+    if (typeof __dirname == 'undefined')
+        window.exports = moduleExports;
+    else
+        module.exports = moduleExports
+}());</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-shared_model.html">shared/model</a></li></ul><h3>Classes</h3><ul><li><a href="module-shared_model-Message.html">Message</a></li><li><a href="module-shared_model-User.html">User</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.6</a> on Wed Apr 21 2021 11:46:40 GMT+0100 (British Summer Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
